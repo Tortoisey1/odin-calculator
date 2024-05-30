@@ -1,3 +1,10 @@
+let firstNum, secondNum, operator;
+
+let display = document.querySelector(".display");
+let displayValue ='';
+
+let waitForSecondNum = false;
+
 function add(a, b) {
     return a + b;
 }
@@ -15,8 +22,6 @@ function divide(a, b) {
 }
 
 
-let firstNum, secondNum, operator;
-
 function operate(operator, firstNum, secondNum) {
     switch (operator) {
         case '+':
@@ -32,14 +37,9 @@ function operate(operator, firstNum, secondNum) {
             return divide(firstNum, secondNum);
         default:
             return null;
-
-
     }
 }
 
-let displayValue = "0";
-
-let display = document.querySelector(".display");
 
 function reset() {
     firstNum = null;
@@ -61,7 +61,12 @@ function clear() {
 //function for numbers
 document.querySelectorAll(".number").forEach(button => {
     button.addEventListener("click", () => {
-        displayValue += button.textContent;
+        if (waitForSecondNum) {
+            displayValue = button.textContent;
+            waitForSecondNum = false;
+        } else {
+            displayValue += button.textContent;
+        }
         updateDisplay();
     });
 });
@@ -69,15 +74,18 @@ document.querySelectorAll(".number").forEach(button => {
 
 //function for operators
 document.querySelectorAll(".operator").forEach(button => {
-    if (firstNum == null) {
-        firstNum = parseFloat(displayValue);
-    } else {
-        secondNum = parseFloat(displayValue);
-        displayValue = operate(operator, firstNum, secondNum).toString();
-    }
-    operator = button.textContent;
-    displayValue = "";
-    updateDisplay();
+    button.addEventListener("click", () => {
+        if (firstNum == null) {
+            firstNum = parseFloat(displayValue);
+        } else if (!waitForSecondNum) {
+            secondNum = parseFloat(displayValue);
+            firstNum = operate(operator, firstNum, secondNum);
+            displayValue = firstNum.toString();
+        }
+        operator = button.textContent;
+        waitForSecondNum = true;
+        updateDisplay();
+    });
 });
 
 
