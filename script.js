@@ -18,6 +18,10 @@ function multiply(a, b) {
 }
 
 function divide(a, b) {
+    //divide by 0
+    if(b==0){
+        return "Try harder";
+    }
     return a / b;
 }
 
